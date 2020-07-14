@@ -22,10 +22,15 @@
 }
 .Face {
   @include borders;
+  @include button;
   align-items: center;
   cursor: pointer;
   display: flex;
   height: 52px;
   justify-content: center;
   width: 52px;
+  img {
+    width: 40px;
+    height: 40px;
+  }
 }
