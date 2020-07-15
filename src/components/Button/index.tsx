@@ -9,6 +9,8 @@ interface ButtonProps {
   col: number;
   state: CellState;
   value: CellValue;
+  onClick: (rowParam: number, colParam: number) => any;
+  onContext: (rowParam: number, colParam: number) => any;
 }
 
 const Button: React.FunctionComponent<ButtonProps> = ({
@@ -16,9 +18,11 @@ const Button: React.FunctionComponent<ButtonProps> = ({
   col,
   state,
   value,
+  onClick,
+  onContext,
 }) => {
   const renderContent = (): React.ReactNode => {
-    if (state === CellState.visible) {
+    if (state === CellState.clicked) {
       if (value === CellValue.bomb) {
         return <img src={mine} alt="mine" />;
       }
@@ -31,8 +35,10 @@ const Button: React.FunctionComponent<ButtonProps> = ({
   return (
     <div
       className={`Button ${
-        state === CellState.visible ? "visible" : ""
+        state === CellState.clicked ? "visible" : ""
       } value-${value}`}
+      onClick={onClick(row, col)}
+      onContextMenu={onContext(row, col)}
     >
       {renderContent()}
     </div>

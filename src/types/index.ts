@@ -16,8 +16,8 @@ export enum CellValue {
   bomb,
 }
 export enum CellState {
-  open,
-  visible,
+  notClicked,
+  clicked,
   flag,
 }
 export type Cell = { value: CellValue; state: CellState };
