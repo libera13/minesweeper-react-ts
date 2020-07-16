@@ -9,7 +9,11 @@ const NumberDisplay: React.FunctionComponent<NumberDisplayProps> = ({
   value,
 }) => {
   return (
-      <div className={"NumberDisplay"}>{value.toString().padStart(3, "0")}</div>
+    <div className={"NumberDisplay"}>
+      {value >= 0
+        ? value.toString().padStart(3, "0")
+        : `- ${Math.abs(value).toString().padStart(2, "0")}`}
+    </div>
   );
 };
 

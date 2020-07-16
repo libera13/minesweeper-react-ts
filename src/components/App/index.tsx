@@ -4,50 +4,74 @@ import { generateCells } from "../../utils";
 import Button from "../Button";
 import FaceHappy from "../../assets/FaceHappy.png";
 import FaceOFace from "../../assets/FaceOFace.png";
-import FaceWon from "../../assets/FaceWon.png";
-import FaceLose from "../../assets/FaceLose.png";
 import "./App.scss";
-import {CellState} from "../../types";
+import { CellState, CellValue } from "../../types";
+import { NUM_OF_BOMBS } from "../../constants";
 
 const App: React.FunctionComponent = () => {
   const [cells, setCells] = useState(generateCells());
   const [face, setFace] = useState(FaceHappy);
   const [time, setTime] = useState(0);
   const [live, setLive] = useState(false);
+  const [bombCounter, setBombCounter] = useState(NUM_OF_BOMBS);
 
+  // handle face change on click
   const handleMouseDown = () => {
     setFace(FaceOFace);
   };
   const handleMouseUp = () => {
     setFace(FaceHappy);
   };
+  // handle cell click
   const handleCellClick = (rowParam: number, colParam: number) => (): void => {
-    console.log(rowParam, colParam);
     // start game
     if (!live) {
       setLive(true);
+      // TODO make sure that first click will not be bomn
+    }
+    const currentCells = cells.slice();
+    const currentCell = cells[rowParam][colParam];
+
+    if ([CellState.flag, CellState.clicked].includes(currentCell.state)) {
+      return;
+    }
+
+    if (currentCell.value === CellValue.bomb) {
+      // TODO take care of this
+    } else if (currentCell.value === CellValue.none) {
+      //    TODO open everything
+    } else {
+      currentCells[rowParam][colParam].state = CellState.clicked;
+      setCells(currentCells);
     }
   };
+  // handle add flag click
   const handleCellContext = (rowParam: number, colParam: number) => (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ): void => {
-    e.preventDefault()
-    const currentCells = cells.slice()
-    const currentCell = cells[rowParam][colParam]
-    // start game
+    e.preventDefault();
+    const currentCells = [...cells];
+    const currentCell = cells[rowParam][colParam];
+
+    if (!live) {
+      return;
+    }
     if (currentCell.state === CellState.notClicked) {
       // currentCell.state = CellState.flag
-      currentCells[rowParam][colParam].state = CellState.flag
-      setCells(currentCells)
+      currentCells[rowParam][colParam].state = CellState.flag;
+      setCells(currentCells);
+      setBombCounter(bombCounter - 1);
     } else if (currentCell.state === CellState.flag) {
       // currentCell.state = CellState.notClicked
-      currentCells[rowParam][colParam].state = CellState.notClicked
-      setCells(currentCells)
+      currentCells[rowParam][colParam].state = CellState.notClicked;
+      setCells(currentCells);
+      setBombCounter(bombCounter + 1);
     }
   };
 
+  // Set Timer
   useEffect(() => {
-    if (live) {
+    if (live && time < 999) {
       const timer = setInterval(() => {
         setTime(time + 1);
       }, 1000);
@@ -65,7 +89,6 @@ const App: React.FunctionComponent = () => {
     }
   };
 
-  console.log(cells);
   const renderCells = (): React.ReactNode => {
     return cells.map((row, rowIndex) =>
       row.map((cell, colIndex) => {
@@ -87,7 +110,7 @@ const App: React.FunctionComponent = () => {
   return (
     <div className={"App"}>
       <div className="Header">
-        <NumberDisplay value={0} />
+        <NumberDisplay value={bombCounter} />
         <div className="Face" onClick={handleFaceClick}>
           <img src={face} alt="" />
         </div>
