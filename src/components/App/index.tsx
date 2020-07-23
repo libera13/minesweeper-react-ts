@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NumberDisplay from "../NumberDisplay";
-import { generateCells } from "../../utils";
+import {generateCells, openEmptyCells} from "../../utils";
 import Button from "../Button";
 import FaceHappy from "../../assets/FaceHappy.png";
 import FaceOFace from "../../assets/FaceOFace.png";
@@ -29,7 +29,7 @@ const App: React.FunctionComponent = () => {
       setLive(true);
       // TODO make sure that first click will not be bomn
     }
-    const currentCells = cells.slice();
+    let newCells = cells.slice();
     const currentCell = cells[rowParam][colParam];
 
     if ([CellState.flag, CellState.clicked].includes(currentCell.state)) {
@@ -39,10 +39,12 @@ const App: React.FunctionComponent = () => {
     if (currentCell.value === CellValue.bomb) {
       // TODO take care of this
     } else if (currentCell.value === CellValue.none) {
+      newCells = openEmptyCells(newCells, rowParam, colParam)
+      setCells(newCells)
       //    TODO open everything
     } else {
-      currentCells[rowParam][colParam].state = CellState.clicked;
-      setCells(currentCells);
+      newCells[rowParam][colParam].state = CellState.clicked;
+      setCells(newCells);
     }
   };
   // handle add flag click
@@ -56,12 +58,15 @@ const App: React.FunctionComponent = () => {
     if (!live) {
       return;
     }
+    //show flag
     if (currentCell.state === CellState.notClicked) {
       // currentCell.state = CellState.flag
       currentCells[rowParam][colParam].state = CellState.flag;
       setCells(currentCells);
       setBombCounter(bombCounter - 1);
-    } else if (currentCell.state === CellState.flag) {
+    }
+    //hide flag
+    else if (currentCell.state === CellState.flag) {
       // currentCell.state = CellState.notClicked
       currentCells[rowParam][colParam].state = CellState.notClicked;
       setCells(currentCells);
