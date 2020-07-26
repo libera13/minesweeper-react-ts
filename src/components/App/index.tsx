@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
 import NumberDisplay from "../NumberDisplay";
-import {generateCells, openEmptyCells} from "../../utils";
+import { generateCells, openEmptyCells } from "../../utils";
 import Button from "../Button";
 import FaceHappy from "../../assets/FaceHappy.png";
 import FaceOFace from "../../assets/FaceOFace.png";
+import FaceWon from "../../assets/FaceWon.png";
+import FaceLose from "../../assets/FaceLose.png";
 import "./App.scss";
-import { CellState, CellValue } from "../../types";
-import { NUM_OF_BOMBS } from "../../constants";
+import { Cell, CellState, CellValue } from "../../types";
+import { MAX_COLS, MAX_ROWS, NUM_OF_BOMBS } from "../../constants";
 
 const App: React.FunctionComponent = () => {
   const [cells, setCells] = useState(generateCells());
   const [face, setFace] = useState(FaceHappy);
   const [time, setTime] = useState(0);
   const [live, setLive] = useState(false);
+  const [hasLost, setHasLost] = useState(false);
+  const [hasWon, setHasWon] = useState(false);
   const [bombCounter, setBombCounter] = useState(NUM_OF_BOMBS);
 
   // handle face change on click
@@ -25,27 +29,65 @@ const App: React.FunctionComponent = () => {
   // handle cell click
   const handleCellClick = (rowParam: number, colParam: number) => (): void => {
     // start game
-    if (!live) {
-      setLive(true);
-      // TODO make sure that first click will not be bomn
-    }
     let newCells = cells.slice();
-    const currentCell = cells[rowParam][colParam];
+    let currentCell = newCells[rowParam][colParam];
+
+    if (!live) {
+      while (currentCell.value === CellValue.bomb) {
+        newCells = generateCells();
+        currentCell = newCells[rowParam][colParam];
+      }
+      setLive(true);
+    }
 
     if ([CellState.flag, CellState.clicked].includes(currentCell.state)) {
       return;
     }
 
     if (currentCell.value === CellValue.bomb) {
-      // TODO take care of this
+      setHasLost(true);
+      newCells[rowParam][colParam].red = true;
+      newCells = openAllBombs();
+      setCells(newCells);
+      return;
     } else if (currentCell.value === CellValue.none) {
-      newCells = openEmptyCells(newCells, rowParam, colParam)
-      setCells(newCells)
-      //    TODO open everything
+      newCells = openEmptyCells(newCells, rowParam, colParam);
     } else {
       newCells[rowParam][colParam].state = CellState.clicked;
-      setCells(newCells);
     }
+
+    // Check if all correct cells are open
+    let safeOpenCellsExists = false;
+    for (let row = 0; row < MAX_ROWS; row++) {
+      for (let col = 0; col < MAX_COLS; col++) {
+        const currentCell = newCells[row][col];
+
+        if (
+          currentCell.value !== CellValue.bomb &&
+          currentCell.state === CellState.notClicked
+        ) {
+          safeOpenCellsExists = true;
+          break;
+        }
+      }
+    }
+
+    if (!safeOpenCellsExists) {
+      newCells = newCells.map((row) =>
+        row.map((cell) => {
+          if (cell.value === CellValue.bomb) {
+            return {
+              ...cell,
+              state: CellState.flag,
+            };
+          }
+          return cell;
+        })
+      );
+      setHasWon(true);
+    }
+
+    setCells(newCells);
   };
   // handle add flag click
   const handleCellContext = (rowParam: number, colParam: number) => (
@@ -86,14 +128,44 @@ const App: React.FunctionComponent = () => {
     }
   }, [live, time]);
 
+  useEffect(() => {
+    if (hasLost) {
+      setFace(FaceLose);
+      setLive(false);
+    }
+  }, [hasLost]);
+
+  useEffect(() => {
+    if (hasWon) {
+      setFace(FaceWon);
+      setLive(false);
+    }
+  }, [hasWon]);
+
   const handleFaceClick = (): void => {
-    if (live) {
+    if (live || hasLost) {
       setLive(false);
       setTime(0);
       setCells(generateCells());
+      setHasLost(false);
+      setHasWon(false);
     }
   };
 
+  const openAllBombs = (): Cell[][] => {
+    const currentCells = [...cells];
+    return currentCells.map((row, rowIndex) =>
+      row.map((cell, colIndex) => {
+        if (cell.value === CellValue.bomb) {
+          return {
+            ...cell,
+            state: CellState.clicked,
+          };
+        }
+        return cell;
+      })
+    );
+  };
   const renderCells = (): React.ReactNode => {
     return cells.map((row, rowIndex) =>
       row.map((cell, colIndex) => {
@@ -102,6 +174,7 @@ const App: React.FunctionComponent = () => {
             key={`${rowIndex}-${colIndex}`}
             state={cell.state}
             value={cell.value}
+            red={cell.red}
             row={rowIndex}
             col={colIndex}
             onClick={handleCellClick}

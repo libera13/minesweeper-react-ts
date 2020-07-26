@@ -20,4 +20,4 @@ export enum CellState {
   clicked,
   flag,
 }
-export type Cell = { value: CellValue; state: CellState };
+export type Cell = { value: CellValue; state: CellState, red: boolean };

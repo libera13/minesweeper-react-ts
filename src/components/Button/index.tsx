@@ -9,6 +9,7 @@ interface ButtonProps {
   col: number;
   state: CellState;
   value: CellValue;
+  red?: boolean;
   onClick: (rowParam: number, colParam: number) => any;
   onContext: (rowParam: number, colParam: number) => any;
 }
@@ -18,6 +19,7 @@ const Button: React.FunctionComponent<ButtonProps> = ({
   col,
   state,
   value,
+  red,
   onClick,
   onContext,
 }) => {
@@ -36,7 +38,7 @@ const Button: React.FunctionComponent<ButtonProps> = ({
     <div
       className={`Button ${
         state === CellState.clicked ? "visible" : ""
-      } value-${value}`}
+      } value-${value} ${red ? "red" : ""}`}
       onClick={onClick(row, col)}
       onContextMenu={onContext(row, col)}
     >

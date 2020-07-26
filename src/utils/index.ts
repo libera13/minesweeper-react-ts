@@ -9,6 +9,7 @@ export const generateCells = () => {
     cells.push([]);
     for (let col = 0; col < MAX_COLS; col++) {
       cells[row].push({
+        red: false,
         value: CellValue.none,
         state: CellState.notClicked,
       });
