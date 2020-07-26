@@ -1,23 +1,29 @@
 import React, { useEffect, useState } from "react";
 import NumberDisplay from "../NumberDisplay";
-import { generateCells, openEmptyCells } from "../../utils";
 import Button from "../Button";
+import SettingsPanel from "../SettingsPanel";
+import { generateCells, openEmptyCells } from "../../utils";
+import { Cell, CellState, CellValue } from "../../types";
+import { MAX_COLS, MAX_ROWS, NUM_OF_BOMBS } from "../../constants";
 import FaceHappy from "../../assets/FaceHappy.png";
 import FaceOFace from "../../assets/FaceOFace.png";
 import FaceWon from "../../assets/FaceWon.png";
 import FaceLose from "../../assets/FaceLose.png";
 import "./App.scss";
-import { Cell, CellState, CellValue } from "../../types";
-import { MAX_COLS, MAX_ROWS, NUM_OF_BOMBS } from "../../constants";
 
 const App: React.FunctionComponent = () => {
-  const [cells, setCells] = useState(generateCells());
+  const [numOfCols, setNumOfCols] = useState(MAX_COLS);
+  const [numOfRows, setNumOfRows] = useState(MAX_ROWS);
+  const [numOfBombs, setNumOfBombs] = useState(NUM_OF_BOMBS);
+  const [cells, setCells] = useState(
+    generateCells(numOfCols, numOfRows, numOfBombs)
+  );
   const [face, setFace] = useState(FaceHappy);
   const [time, setTime] = useState(0);
   const [live, setLive] = useState(false);
   const [hasLost, setHasLost] = useState(false);
   const [hasWon, setHasWon] = useState(false);
-  const [bombCounter, setBombCounter] = useState(NUM_OF_BOMBS);
+  const [bombCounter, setBombCounter] = useState(numOfBombs);
 
   // handle face change on click
   const handleMouseDown = () => {
@@ -28,13 +34,17 @@ const App: React.FunctionComponent = () => {
   };
   // handle cell click
   const handleCellClick = (rowParam: number, colParam: number) => (): void => {
+    if (hasWon || hasLost) {
+      return;
+    }
+
     // start game
     let newCells = cells.slice();
     let currentCell = newCells[rowParam][colParam];
 
     if (!live) {
       while (currentCell.value === CellValue.bomb) {
-        newCells = generateCells();
+        newCells = generateCells(numOfCols, numOfRows, numOfBombs);
         currentCell = newCells[rowParam][colParam];
       }
       setLive(true);
@@ -51,15 +61,21 @@ const App: React.FunctionComponent = () => {
       setCells(newCells);
       return;
     } else if (currentCell.value === CellValue.none) {
-      newCells = openEmptyCells(newCells, rowParam, colParam);
+      newCells = openEmptyCells(
+        newCells,
+        rowParam,
+        colParam,
+        numOfCols,
+        numOfRows
+      );
     } else {
       newCells[rowParam][colParam].state = CellState.clicked;
     }
 
     // Check if all correct cells are open
     let safeOpenCellsExists = false;
-    for (let row = 0; row < MAX_ROWS; row++) {
-      for (let col = 0; col < MAX_COLS; col++) {
+    for (let row = 0; row < numOfRows; row++) {
+      for (let col = 0; col < numOfCols; col++) {
         const currentCell = newCells[row][col];
 
         if (
@@ -142,11 +158,16 @@ const App: React.FunctionComponent = () => {
     }
   }, [hasWon]);
 
+  useEffect(() => {
+    const newCells = generateCells(numOfCols, numOfRows, numOfBombs);
+    setCells(newCells)
+  }, [numOfCols, numOfRows, numOfBombs]);
+
   const handleFaceClick = (): void => {
-    if (live || hasLost) {
+    if (live || hasLost || hasWon) {
       setLive(false);
       setTime(0);
-      setCells(generateCells());
+      setCells(generateCells(numOfCols, numOfRows, numOfBombs));
       setHasLost(false);
       setHasWon(false);
     }
@@ -185,8 +206,16 @@ const App: React.FunctionComponent = () => {
     );
   };
 
+  const handleSettingsChange = (col: number, row: number, bombs: number) => {
+    setNumOfCols(col);
+    setNumOfRows(row);
+    setNumOfBombs(bombs);
+    setBombCounter(bombs);
+  };
+
   return (
     <div className={"App"}>
+      <SettingsPanel onSettingsChange={handleSettingsChange} />
       <div className="Header">
         <NumberDisplay value={bombCounter} />
         <div className="Face" onClick={handleFaceClick}>
@@ -198,6 +227,7 @@ const App: React.FunctionComponent = () => {
         className="Body"
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
+        style={{gridTemplateColumns: `repeat(${numOfCols}, 1fr)`, gridTemplateRows: `repeat(${numOfRows}, 1fr)`}}
       >
         {renderCells()}
       </div>
