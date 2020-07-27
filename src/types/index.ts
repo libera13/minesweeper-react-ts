@@ -20,4 +20,10 @@ export enum CellState {
   clicked,
   flag,
 }
+export enum Level {
+  beginner,
+  intermediate,
+  expert,
+  custom
+}
 export type Cell = { value: CellValue; state: CellState, red: boolean };
