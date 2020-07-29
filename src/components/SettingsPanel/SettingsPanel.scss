@@ -1,4 +1,7 @@
 .SettingsPanel {
+  h3 {
+    padding-left: 36px;
+  }
   form {
     display: flex;
     flex-direction: column;
@@ -7,4 +10,16 @@
   label {
     width: 180px;
   }
+}
+.FlexContainer{
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.LeftCornerButton{
+  bottom: 10px;
+  right: 20px;
+  padding: 5px 10px;
+  position: absolute;
 }

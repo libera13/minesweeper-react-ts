@@ -10,6 +10,8 @@ import FaceOFace from "../../assets/FaceOFace.png";
 import FaceWon from "../../assets/FaceWon.png";
 import FaceLose from "../../assets/FaceLose.png";
 import "./App.scss";
+import "../../styles/index.scss"
+import { Modal } from "../Modal";
 
 const App: React.FunctionComponent = () => {
   const [numOfCols, setNumOfCols] = useState(MAX_COLS);
@@ -24,6 +26,7 @@ const App: React.FunctionComponent = () => {
   const [hasLost, setHasLost] = useState(false);
   const [hasWon, setHasWon] = useState(false);
   const [bombCounter, setBombCounter] = useState(numOfBombs);
+  const [modalShow, setModalShow] = useState(false);
 
   // handle face change on click
   const handleMouseDown = () => {
@@ -160,7 +163,7 @@ const App: React.FunctionComponent = () => {
 
   useEffect(() => {
     const newCells = generateCells(numOfCols, numOfRows, numOfBombs);
-    setCells(newCells)
+    setCells(newCells);
   }, [numOfCols, numOfRows, numOfBombs]);
 
   const handleFaceClick = (): void => {
@@ -175,8 +178,8 @@ const App: React.FunctionComponent = () => {
 
   const openAllBombs = (): Cell[][] => {
     const currentCells = [...cells];
-    return currentCells.map((row, rowIndex) =>
-      row.map((cell, colIndex) => {
+    return currentCells.map((row) =>
+      row.map((cell) => {
         if (cell.value === CellValue.bomb) {
           return {
             ...cell,
@@ -212,24 +215,44 @@ const App: React.FunctionComponent = () => {
     setNumOfBombs(bombs);
     setBombCounter(bombs);
   };
+  const handleModalShow = (value: boolean) => {
+    setModalShow(value);
+  };
 
   return (
-    <div className={"App"}>
-      <SettingsPanel onSettingsChange={handleSettingsChange} />
-      <div className="Header">
-        <NumberDisplay value={bombCounter} />
-        <div className="Face" onClick={handleFaceClick}>
-          <img src={face} alt="" />
+    <div className={"Background"}>
+      {modalShow ? (
+          <Modal onModalShowChange={handleModalShow}>
+            <SettingsPanel onSettingsChange={handleSettingsChange} />
+          </Modal>
+      ) : null}
+      <div className={"App"}>
+        <button className={"PrimaryButton"}
+          onClick={() => {
+            handleModalShow(!modalShow);
+          }}
+        >
+          {" "}
+          Settings{" "}
+        </button>
+        <div className="Header">
+          <NumberDisplay value={bombCounter} />
+          <div className="Face" onClick={handleFaceClick}>
+            <img src={face} alt="" />
+          </div>
+          <NumberDisplay value={time} />
         </div>
-        <NumberDisplay value={time} />
-      </div>
-      <div
-        className="Body"
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        style={{gridTemplateColumns: `repeat(${numOfCols}, 1fr)`, gridTemplateRows: `repeat(${numOfRows}, 1fr)`}}
-      >
-        {renderCells()}
+        <div
+          className="Body"
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          style={{
+            gridTemplateColumns: `repeat(${numOfCols}, 1fr)`,
+            gridTemplateRows: `repeat(${numOfRows}, 1fr)`,
+          }}
+        >
+          {renderCells()}
+        </div>
       </div>
     </div>
   );
