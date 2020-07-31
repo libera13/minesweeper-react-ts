@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/MineSweeper/static/css/main.0b4f42e8.chunk.css",
-    "main.js": "/MineSweeper/static/js/main.471fa31d.chunk.js",
-    "main.js.map": "/MineSweeper/static/js/main.471fa31d.chunk.js.map",
-    "runtime-main.js": "/MineSweeper/static/js/runtime-main.ea63a830.js",
-    "runtime-main.js.map": "/MineSweeper/static/js/runtime-main.ea63a830.js.map",
-    "static/js/2.1bac962e.chunk.js": "/MineSweeper/static/js/2.1bac962e.chunk.js",
-    "static/js/2.1bac962e.chunk.js.map": "/MineSweeper/static/js/2.1bac962e.chunk.js.map",
-    "index.html": "/MineSweeper/index.html",
-    "precache-manifest.79142d80112c0ed9928bfc0f56866e85.js": "/MineSweeper/precache-manifest.79142d80112c0ed9928bfc0f56866e85.js",
-    "service-worker.js": "/MineSweeper/service-worker.js",
-    "static/css/main.0b4f42e8.chunk.css.map": "/MineSweeper/static/css/main.0b4f42e8.chunk.css.map",
-    "static/js/2.1bac962e.chunk.js.LICENSE.txt": "/MineSweeper/static/js/2.1bac962e.chunk.js.LICENSE.txt",
-    "static/media/FaceLose.png": "/MineSweeper/static/media/FaceLose.a68d62fa.png",
-    "static/media/mine.png": "/MineSweeper/static/media/mine.2180eab2.png"
+    "main.css": "/minesweeper-react-ts/static/css/main.0b4f42e8.chunk.css",
+    "main.js": "/minesweeper-react-ts/static/js/main.471fa31d.chunk.js",
+    "main.js.map": "/minesweeper-react-ts/static/js/main.471fa31d.chunk.js.map",
+    "runtime-main.js": "/minesweeper-react-ts/static/js/runtime-main.3012521a.js",
+    "runtime-main.js.map": "/minesweeper-react-ts/static/js/runtime-main.3012521a.js.map",
+    "static/js/2.1bac962e.chunk.js": "/minesweeper-react-ts/static/js/2.1bac962e.chunk.js",
+    "static/js/2.1bac962e.chunk.js.map": "/minesweeper-react-ts/static/js/2.1bac962e.chunk.js.map",
+    "index.html": "/minesweeper-react-ts/index.html",
+    "precache-manifest.6796c5c3d234924a2482ae9647104b77.js": "/minesweeper-react-ts/precache-manifest.6796c5c3d234924a2482ae9647104b77.js",
+    "service-worker.js": "/minesweeper-react-ts/service-worker.js",
+    "static/css/main.0b4f42e8.chunk.css.map": "/minesweeper-react-ts/static/css/main.0b4f42e8.chunk.css.map",
+    "static/js/2.1bac962e.chunk.js.LICENSE.txt": "/minesweeper-react-ts/static/js/2.1bac962e.chunk.js.LICENSE.txt",
+    "static/media/FaceLose.png": "/minesweeper-react-ts/static/media/FaceLose.a68d62fa.png",
+    "static/media/mine.png": "/minesweeper-react-ts/static/media/mine.2180eab2.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.ea63a830.js",
+    "static/js/runtime-main.3012521a.js",
     "static/js/2.1bac962e.chunk.js",
     "static/css/main.0b4f42e8.chunk.css",
     "static/js/main.471fa31d.chunk.js"
