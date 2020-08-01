@@ -2,7 +2,7 @@
   "name": "minesweeper-react-ts",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://libera13.github.io/MineSweeper",
+  "homepage": "https://libera13.github.io/minesweeper-react-ts",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
